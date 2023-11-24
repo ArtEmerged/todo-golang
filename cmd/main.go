@@ -16,7 +16,17 @@ func main() {
 	if err := initConfig(); err != nil {
 		log.Fatalf("error initializing config: %s", err.Error())
 	}
-	repos := repository.NewRepository()
+
+
+	db, err := repository.NewSqliteDB(&repository.Config{
+		Driver: viper.GetString("db.driver"),
+		Dsn:    viper.GetString("db.dnc"),
+	})
+	if err != nil {
+		log.Fatalf("failed to initialize db: %s", err.Error())
+	}
+
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 	svr := new(todo.Server)
