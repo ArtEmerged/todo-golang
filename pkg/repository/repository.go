@@ -1,8 +1,13 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+	"todo"
+)
 
-type Authorization interface{}
+type Authorization interface {
+	CreateUser(user todo.User) (int, error)
+}
 
 type TodoList interface{}
 
@@ -15,5 +20,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sql.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Authorization: NewAuthSqlite(db),
+	}
 }

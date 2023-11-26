@@ -8,9 +8,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const (
+	userTable       = "users"
+	todoListTable   = "todo_lists"
+	usersListsTable = "users_lists"
+	todoItemsTable  = "todo_items"
+	listsItemsTable = "lists_items"
+)
+
 type Config struct {
-	Dsn    string
 	Driver string
+	Dsn    string
 }
 
 func NewSqliteDB(config *Config) (*sql.DB, error) {

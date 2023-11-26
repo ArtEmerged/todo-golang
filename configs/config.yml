@@ -1,4 +1,4 @@
 port: "8000"
 db:
   driver: "sqlite3"
-  dns: "todo.sqlite3"
+  dsn: "todo.sqlite3"
