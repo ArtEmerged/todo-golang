@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	"todo"
 )
 
@@ -26,4 +27,11 @@ func (r *AuthSqlite) CreateUser(user todo.User) (int, error) {
 		return 0, err
 	}
 	return id, nil
+}
+
+func (r *AuthSqlite) GetUser(username, password string) (todo.User, error) {
+	var user todo.User
+	query := fmt.Sprintf("SELECT * FROM %s WHERE username = $1 AND password_hash = $2 ", userTable)
+	err := r.db.QueryRow(query, username, password).Scan(&user.Id, &user.Name, &user.Username, &user.Password)
+	return user, err
 }

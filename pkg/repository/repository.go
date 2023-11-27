@@ -2,11 +2,13 @@ package repository
 
 import (
 	"database/sql"
+
 	"todo"
 )
 
 type Authorization interface {
 	CreateUser(user todo.User) (int, error)
+	GetUser(username, password string) (todo.User, error)
 }
 
 type TodoList interface{}
