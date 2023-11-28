@@ -40,7 +40,7 @@ func (r *TodoListSqlite) Create(userId int, list todo.TodoList) (int, error) {
 }
 
 func (r *TodoListSqlite) GetAll(userId int) ([]todo.TodoList, error) {
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 ", todoListTable, usersListsTable)
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul ON tl.id = ul.list_id WHERE ul.user_id = $1 ", todoListTable, usersListsTable)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
@@ -64,4 +64,14 @@ func (r *TodoListSqlite) GetAll(userId int) ([]todo.TodoList, error) {
 		return nil, err
 	}
 	return lists, nil
+}
+
+func (r *TodoListSqlite) GetListById(userId, listId int) (todo.TodoList, error) {
+	var list todo.TodoList
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul ON tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2", todoListTable, usersListsTable)
+	err := r.db.QueryRow(query, userId, listId).Scan(&list.Id, &list.Title, &list.Description)
+	if err != nil {
+		return list, err
+	}
+	return list, err
 }
