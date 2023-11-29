@@ -26,6 +26,10 @@ func NewSqliteDB(config *Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	_, err = db.Exec("PRAGMA foreign_keys=ON;")
+	if err != nil {
+		return nil, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	err = db.PingContext(ctx)

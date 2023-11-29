@@ -70,7 +70,48 @@ func (h *Handler) getListById(c *gin.Context) {
 }
 
 func (h *Handler) updateList(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "user id not found") // 500
+		return
+	}
+	listId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param") // 400
+		return
+	}
+	var input todo.UpdateList
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error()) // 400
+		return
+	}
+	err = h.services.UpdateList(userId,listId,input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error()) // 500
+		return
+	}
+	c.JSON(http.StatusOK, statusResponse{
+		Status: "ok",
+	})
 }
 
 func (h *Handler) deleteList(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "user id not found") // 500
+		return
+	}
+	listId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param") // 400
+		return
+	}
+	err = h.services.DeleteList(userId, listId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error()) // 500
+		return
+	}
+	c.JSON(http.StatusOK, statusResponse{
+		Status: "ok",
+	})
 }

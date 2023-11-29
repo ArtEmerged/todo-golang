@@ -1,0 +1,1 @@
+sqlite3 todo.sqlite3 < migrations/init.sql

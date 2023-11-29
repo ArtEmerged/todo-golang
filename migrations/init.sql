@@ -1,3 +1,4 @@
+
 CREATE TABLE users
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,6 +21,7 @@ CREATE TABLE users_lists
     list_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (list_id) REFERENCES todo_lists(id) ON DELETE CASCADE
+    
 );
 
 CREATE TABLE todo_items
@@ -37,4 +39,5 @@ CREATE TABLE lists_items
     list_id INTEGER NOT NULL,
     FOREIGN KEY (item_id) REFERENCES todo_items(id) ON DELETE CASCADE,
     FOREIGN KEY (list_id) REFERENCES todo_lists(id) ON DELETE CASCADE
+    
 );

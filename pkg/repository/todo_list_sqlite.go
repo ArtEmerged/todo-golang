@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"todo"
@@ -74,4 +75,31 @@ func (r *TodoListSqlite) GetListById(userId, listId int) (todo.TodoList, error) 
 		return list, err
 	}
 	return list, err
+}
+
+func (r *TodoListSqlite) DeleteList(userId, listId int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", todoListTable)
+	_, err := r.db.Exec(query, listId)
+	return err
+}
+
+func (r *TodoListSqlite) UpdateList(userId, listId int, input todo.UpdateList) error {
+	set := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+	if input.Title != nil {
+		set = append(set, fmt.Sprintf("title = $%d", argId))
+		args = append(args, input.Title)
+		argId++
+	}
+	if input.Description != nil {
+		set = append(set, fmt.Sprintf("description = $%d", argId))
+		args = append(args, input.Description)
+		argId++
+	}
+	args = append(args, listId)
+	joinSet := strings.Join(set, ", ")
+	query := fmt.Sprintf("UPDATE %s  SET %s WHERE id = $%d", todoListTable, joinSet, argId)
+	_, err := r.db.Exec(query, args...)
+	return err
 }
