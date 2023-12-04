@@ -85,7 +85,7 @@ func (h *Handler) updateList(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error()) // 400
 		return
 	}
-	err = h.services.UpdateList(userId,listId,input)
+	err = h.services.TodoList.Update(userId, listId, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error()) // 500
 		return
@@ -106,7 +106,8 @@ func (h *Handler) deleteList(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param") // 400
 		return
 	}
-	err = h.services.DeleteList(userId, listId)
+
+	err = h.services.TodoList.Delete(userId, listId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error()) // 500
 		return

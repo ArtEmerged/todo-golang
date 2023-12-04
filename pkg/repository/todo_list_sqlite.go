@@ -23,21 +23,25 @@ func (r *TodoListSqlite) Create(userId int, list todo.TodoList) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	var listId int
 	createListQuery := fmt.Sprintf("INSERT INTO %s (title, description) VALUES ($1, $2)", todoListTable)
-	_, err = r.db.Exec(createListQuery, list.Title, list.Description)
+	result, err := r.db.Exec(createListQuery, list.Title, list.Description)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-	r.db.QueryRow("SELECT last_insert_rowid() AS id").Scan(&listId)
+
+	listId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	
 	createUsersListsQuery := fmt.Sprintf("INSERT INTO %s (user_id, list_id) VALUES ($1, $2)", usersListsTable)
 	_, err = r.db.Exec(createUsersListsQuery, userId, listId)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-	return listId, tx.Commit()
+	return int(listId), tx.Commit()
 }
 
 func (r *TodoListSqlite) GetAll(userId int) ([]todo.TodoList, error) {
@@ -55,7 +59,7 @@ func (r *TodoListSqlite) GetAll(userId int) ([]todo.TodoList, error) {
 	var lists []todo.TodoList
 	for rows.Next() {
 		list := todo.TodoList{}
-		err := rows.Scan(&list.Id, &list.Title, &list.Description)
+		err = rows.Scan(&list.Id, &list.Title, &list.Description)
 		if err != nil {
 			return nil, err
 		}
@@ -77,13 +81,13 @@ func (r *TodoListSqlite) GetListById(userId, listId int) (todo.TodoList, error) 
 	return list, err
 }
 
-func (r *TodoListSqlite) DeleteList(userId, listId int) error {
+func (r *TodoListSqlite) Delete(listId int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", todoListTable)
 	_, err := r.db.Exec(query, listId)
 	return err
 }
 
-func (r *TodoListSqlite) UpdateList(userId, listId int, input todo.UpdateList) error {
+func (r *TodoListSqlite) Update( listId int, input todo.UpdateList) error {
 	set := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

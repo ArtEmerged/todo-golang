@@ -16,17 +16,16 @@ func NewAuthSqlite(db *sql.DB) *AuthSqlite {
 }
 
 func (r *AuthSqlite) CreateUser(user todo.User) (int, error) {
-	var id int
 	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3)", userTable)
-	_, err := r.db.Exec(query, user.Name, user.Username, user.Password)
+	result, err := r.db.Exec(query, user.Name, user.Username, user.Password)
 	if err != nil {
 		return 0, err
 	}
-	err = r.db.QueryRow("SELECT last_insert_rowid() AS id").Scan(&id)
+	userId, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
-	return id, nil
+	return int(userId), nil
 }
 
 func (r *AuthSqlite) GetUser(username, password string) (todo.User, error) {
