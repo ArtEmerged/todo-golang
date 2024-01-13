@@ -31,7 +31,7 @@ make migrate
 |-------------|----------------------|----------------|-------------------|----------------------------------------|
 | POST        | /auth/sign-up        | signUp         | ----              | User registration                      |
 | POST        | /auth/sign-in        | signIn         | ----              | User login                             |
-|-------------|----------------------|----------------|-------------------|----------------------------------------|
+|------------|---------------------|---------------|------------------|-------------------------------------|
 | POST        | /api/lists/          | createList     | userIdentity      | Create a new list                      |
 | GET         | /api/lists/          | getAllLists    | userIdentity      | Get all lists                          |
 | GET         | /api/lists/:id       | getListById    | userIdentity      | Get a list by ID                       |
@@ -39,7 +39,7 @@ make migrate
 | DELETE      | /api/lists/:id       | deleteList     | userIdentity      | Delete a list by ID                    |
 | POST        | /api/lists/:id/items | createItem     | userIdentity      | Create a new item in a list by ID      |
 | GET         | /api/lists/:id/items | getAllItems    | userIdentity      | Get all items in a list by ID          |
-|-------------|----------------------|----------------|-------------------|----------------------------------------|
+|------------|---------------------|---------------|------------------|-------------------------------------|
 | GET         | /api/items/:id       | getItemById    | userIdentity      | Get an item by ID                      |
 | PUT         | /api/items/:id       | updateItem     | userIdentity      | Update an item by ID                   |
 | DELETE      | /api/items/:id       | deleteItem     | userIdentity      | Delete an item by ID                   |
